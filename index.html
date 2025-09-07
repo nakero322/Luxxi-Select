@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luxxi Select — Brutal Luxury Catalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lora:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --fg: #fff;
+  --muted: #aaa;
+  --accent: #d4af37; /* золотой для luxury */
+  --max-width: 1400px;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Lora', serif; color: var(--fg); background: var(--bg); overflow-x: hidden; }
+
+a { color: inherit; text-decoration: none; }
+
+header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 24px 40px; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo {
+  font-family: 'Playfair Display', serif; font-weight: 900; font-size: 36px;
+  background: linear-gradient(90deg, #d4af37, #fffacd);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+nav a { margin-left: 28px; font-weight: 600; letter-spacing: 1px; opacity: 0.9; }
+
+main { max-width: var(--max-width); margin: 40px auto; padding: 0 20px; }
+section { margin-bottom: 60px; }
+h2 { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 38px; margin-bottom: 28px; letter-spacing: 1px; }
+
+.lookbook {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+  gap: 24px;
+}
+
+.tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  height: 380px;
+  background: #111;
+  transition: transform .4s;
+  display: flex; align-items: flex-end;
+}
+
+.tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .6s, filter .4s;
+}
+
+.tile:hover img {
+  transform: scale(1.12);
+  filter: brightness(1.2);
+}
+
+.tile::after {
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+}
+
+.tile .meta {
+  position: relative; z-index: 2;
+  color: #fff;
+  padding: 16px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.filters {
+  margin-bottom: 32px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+}
+
+.filters button {
+  background: none; border: 1px solid rgba(255,255,255,0.3);
+  color: #fff; padding: 6px 14px; border-radius: 6px;
+  cursor: pointer; transition: all .3s;
+}
+
+.filters button.active, .filters button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+#intro {
+  position: fixed; inset:0; background:#0a0a0a; display:flex; justify-content:center; align-items:center; z-index:9999;
+  flex-direction: column;
+}
+
+.intro-logo {
+  font-family:'Playfair Display',serif; font-weight:900; font-size: 96px;
+  background: linear-gradient(90deg, #d4af37, #fffacd);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation: luxuryIntro 2s ease forwards;
+  opacity: 0;
+}
+
+@keyframes luxuryIntro {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+}
+.lightbox.show { display: flex; }
+.lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<div id="intro"><div class="intro-logo">Luxxi Select</div></div>
+<div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-label="Image viewer">
+  <img id="lightbox-img" src="" alt="Enlarged image">
+</div>
+
+<header>
+  <div class="logo">Luxxi Select</div>
+  <nav>
+    <a href="#catalog">Catalog</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+<section id="catalog">
+<h2>Luxury Catalog</h2>
+
+<div class="filters" id="brandFilters">
+  <button data-brand="all" class="active">All</button>
+  <button data-brand="louisvuitton">Louis Vuitton</button>
+  <button data-brand="corteiz">Corteiz</button>
+  <button data-brand="nike">Nike</button>
+  <button data-brand="polo">Polo</button>
+  <button data-brand="lacoste">Lacoste</button>
+  <button data-brand="hellstar">Hellstar</button>
+  <button data-brand="coach">Coach</button>
+  <button data-brand="goyard">Goyard</button>
+  <button data-brand="stoneisland">Stone Island</button>
+  <button data-brand="cpcompany">C.P. Company</button>
+  <button data-brand="bape">BAPE</button>
+  <button data-brand="maisonmargiela">Maison Margiela</button>
+  <button data-brand="dior">Dior</button>
+  <button data-brand="burberry">Burberry</button>
+</div>
+
+<div class="lookbook" id="lookbook">
+  <div class="tile" data-brand="louisvuitton">
+    <img src="https://images.stockx.com/images/Louis-Vuitton-Duo-Messenger-Black.jpg?fit=fill&bg=FFFFFF&w=700&h=500&fm=webp&auto=compress&q=90&dpr=2&trim=color&trimcolor=ffffff&updated_at=1606317863" alt="Louis Vuitton Duo Messenger">
+    <div class="meta"><div>Louis Vuitton Duo Messenger</div><div>€35</div></div>
+  </div>
+  <div class="tile" data-brand="louisvuitton">
+    <img src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSO7XMSrK75KwPsAmcqfn7yhOXhJJtucDGt-GaToFrheFWkLopqxWbfS6iMHLW4OCT8Cuz7aOHgRznODdfk4ohsOqpBcdR08gbGkwFXUuy7JTDYjEbJSsc-PA" alt="Louis Vuitton Duo Messenger">
+    <div class="meta"><div>Louis Vuitton Lv Trainer Monogram Denim White Blue €35</div><div></div></div>
+  </div>
+  <div class="tile" data-brand="corteiz">
+    <img src="https://cdn.shopify.com/s/files/1/0256/5904/6700/products/corteiz_hoodie.jpg" alt="Corteiz Hoodie">
+    <div class="meta"><div>Corteiz Hoodie</div><div>€120</div></div>
+  </div>
+  <div class="tile" data-brand="nike">
+    <img src="https://static.nike.com/a/images/c_limit,w_592,f_auto/t_product_v1/ebf7e9f1-nike.jpg" alt="Nike Air">
+    <div class="meta"><div>Nike Air</div><div>€250</div></div>
+  </div>
+  <div class="tile" data-brand="polo">
+    <img src="https://assets.uggaustralia.com/image/upload/w_800,h_800,f_auto,q_auto/ralph-lauren-shirt.jpg" alt="Polo Shirt">
+    <div class="meta"><div>Polo Shirt</div><div>€90</div></div>
+  </div>
+  <div class="tile" data-brand="lacoste">
+    <img src="https://www.lacoste.com/images/t-shirt.jpg" alt="Lacoste T-Shirt">
+    <div class="meta"><div>Lacoste T-Shirt</div><div>€80</div></div>
+  </div>
+  <div class="tile" data-brand="hellstar">
+    <img src="https://cdn.example.com/hellstar_jacket.jpg" alt="Hellstar Jacket">
+    <div class="meta"><div>Hellstar Jacket</div><div>€200</div></div>
+  </div>
+  <div class="tile" data-brand="coach">
+    <img src="https://www.coach.com/image/handbag.jpg" alt="Coach Handbag">
+    <div class="meta"><div>Coach Handbag</div><div>€350</div></div>
+  </div>
+  <div class="tile" data-brand="goyard">
+    <img src="https://cdn.example.com/goyard_bag.jpg" alt="Goyard Bag">
+    <div class="meta"><div>Goyard Bag</div><div>€1200</div></div>
+  </div>
+  <div class="tile" data-brand="stoneisland">
+    <img src="https://cdn.example.com/stoneisland_jacket.jpg" alt="Stone Island Jacket">
+    <div class="meta"><div>Stone Island Jacket</div><div>€400</div></div>
+  </div>
+  <div class="tile" data-brand="cpcompany">
+    <img src="https://cdn.example.com/cpcompany_jacket.jpg" alt="C.P. Company Jacket">
+    <div class="meta"><div>C.P. Company Jacket</div><div>€380</div></div>
+  </div>
+  <div class="tile" data-brand="bape">
+    <img src="https://www.bape.com/media/catalog/product/cache/1/image/800x800/bape_hoodie.jpg" alt="BAPE Hoodie">
+    <div class="meta"><div>BAPE Hoodie</div><div>€350</div></div>
+  </div>
+  <div class="tile" data-brand="maisonmargiela">
+    <img src="https://cdn.example.com/maisonmargiela_shoes.jpg" alt="Maison Margiela Shoes">
+    <div class="meta"><div>Maison Margiela Shoes</div><div>€600</div></div>
+  </div>
+  <div class="tile" data-brand="dior">
+    <img src="https://cdn.example.com/dior_bag.jpg" alt="Dior Bag">
+    <div class="meta"><div>Dior Bag</div><div>€1500</div></div>
+  </div>
+  <div class="tile" data-brand="burberry">
+    <img src="https://cdn.example.com/burberry_trench.jpg" alt="Burberry Trench">
+    <div class="meta"><div>Burberry Trench</div><div>€900</div></div>
+  </div>
+</div>
+</section>
+
+<section id="contact">
+<h2>Contact</h2>
+<p>Email: <a href="mailto:luxxi.select@gmail.com">luxxi.select@gmail.com</a></p>
+</section>
+</main>
+
+<script>
+// Интро
+window.addEventListener("load", () => {
+  setTimeout(()=>{document.getElementById("intro").style.display="none";},2500);
+});
+
+// Фильтры
+const filterBtns = document.querySelectorAll("#brandFilters button");
+const tiles = document.querySelectorAll("#lookbook .tile");
+filterBtns.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    filterBtns.forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const brand = btn.dataset.brand;
+    tiles.forEach(t=>{
+      t.style.display = (brand==='all'||t.dataset.brand===brand)?'flex':'none';
+    });
+  });
+});
+
+// Лайтбокс
+const lightbox = document.getElementById('lightbox');
+const lbImg = document.getElementById('lightbox-img');
+tiles.forEach(tile => {
+  const img = tile.querySelector('img');
+  tile.addEventListener('click', () => {
+    lbImg.src = img.src;
+    lightbox.classList.add('show');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  });
+});
+lightbox.addEventListener('click', e => { 
+  if(e.target !== lbImg) {
+    lightbox.classList.remove('show');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+});
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') {
+    lightbox.classList.remove('show');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+});
+</script>
+
+</body>
+</html>
